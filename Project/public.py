@@ -1,24 +1,27 @@
 from flask import *
 from db import *
-public=Blueprint("public",__name__)
-@public.route('/',methods=['post','get'])
+public=Blueprint("public",__name__) #Create a blueprint with name "public"
+
+@public.route('/',methods=['post','get']) #@ is a decorator; calls functions when a route is encountered
 def home():
-	return render_template("index.html")
+	return render_template("index.html") #Function redirects/renders this html page
+
 @public.route('/login',methods=['post','get'])
 def login():
-	if 'submit' in request.form:
+	if 'submit' in request.form: #Flask receives stuff in dict format contained in request.form 
 		uname=request.form['uname']
 		pwd=request.form['password']
 		q="select * from login where username ='%s' and password='%s'"%(uname,pwd)
 		res=select(q)
 		if res:
-			if res[0]['type']=="admin":
-				return redirect(url_for('admin.home'))
+			if res[0]['type']=="admin": #Checks if first dictionary of key 'type' is an admin
+				return redirect(url_for('admin.home')) #Runs home func of admin.py
 			else:
 				return redirect(url_for('user.home'))
 
-	if 'register' in request.form:
-		return redirect(url_for('register.home'))
+	# if 'register' in request.form:
+	# 	return redirect(url_for('public.registerhome')) 
+
 	return render_template("login.html")
 
 @public.route('/registerhome',methods=['post','get'])
